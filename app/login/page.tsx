@@ -1,9 +1,8 @@
-'use client'
+"use client"
 
 import type React from "react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useAuth } from "../hooks/use-auth"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
@@ -21,7 +20,6 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { login } = useAuth()
   const { toast } = useToast()
-  const router = useRouter()
 
   console.log("useAuth()", useAuth()) // Verifica si el contexto está disponible
 
