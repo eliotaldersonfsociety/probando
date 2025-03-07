@@ -1,8 +1,5 @@
-"use client"
-
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "../hooks/use-auth"
@@ -25,6 +22,16 @@ export default function LoginPage() {
   const router = useRouter()
 
   console.log("useAuth()", useAuth()) // Verifica si el contexto está disponible
+
+  useEffect(() => {
+    if (!recaptchaToken) {
+      toast({
+        title: "Error",
+        description: "Please complete the reCAPTCHA verification",
+        variant: "destructive",
+      })
+    }
+  }, [recaptchaToken, toast])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -120,4 +127,3 @@ export default function LoginPage() {
     </div>
   )
 }
-
