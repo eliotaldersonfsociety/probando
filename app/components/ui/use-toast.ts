@@ -1,8 +1,10 @@
-// "use client" - Esto indica que el componente usa el cliente de React
-import * as React from "react"
-import type { ToastActionElement, ToastProps } from "@/components/ui/toast"
+"use client"
 
-// Definición de límites y retrasos
+import * as React from "react"
+import Image from "next/image"
+
+import type { ToastActionElement, ToastProps } from "./toast"
+
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
 
@@ -22,7 +24,6 @@ const actionTypes = {
 
 let count = 0
 
-// Función para generar un ID único para cada notificación
 function genId() {
   count = (count + 1) % Number.MAX_VALUE
   return count.toString()
@@ -52,10 +53,8 @@ interface State {
   toasts: ToasterToast[]
 }
 
-// Almacena los tiempos de espera para remover los toast
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
-// Función que agrega el toast a la cola de eliminación
 const addToRemoveQueue = (toastId: string) => {
   if (toastTimeouts.has(toastId)) {
     return
@@ -72,7 +71,6 @@ const addToRemoveQueue = (toastId: string) => {
   toastTimeouts.set(toastId, timeout)
 }
 
-// Reducir el estado con base en las acciones
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_TOAST":
@@ -128,7 +126,6 @@ const listeners: Array<(state: State) => void> = []
 
 let memoryState: State = { toasts: [] }
 
-// Función para despachar las acciones
 function dispatch(action: Action) {
   memoryState = reducer(memoryState, action)
   listeners.forEach((listener) => {
@@ -138,7 +135,6 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-// Función para crear un nuevo toast
 function toast({ ...props }: Toast) {
   const id = genId()
 
@@ -168,7 +164,6 @@ function toast({ ...props }: Toast) {
   }
 }
 
-// Hook para manejar el estado de los toasts
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
 
