@@ -46,7 +46,7 @@ export default function Home() {
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
                     Our shop features a variety of products to meet your needs. Easily browse, search, and filter to
-                    find exactly what you're looking for.
+                    find exactly what you&apos;re looking for.
                   </p>
                 </CardContent>
                 <CardFooter>
@@ -83,7 +83,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Administrators can view all users, manage balances, and oversee the platform's operations through a
+                    Administrators can view all users, manage balances, and oversee the platform&apos;s operations through a
                     dedicated admin interface.
                   </p>
                 </CardContent>
@@ -116,4 +116,3 @@ export default function Home() {
     </div>
   )
 }
-
