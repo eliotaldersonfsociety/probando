@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
-import { createClient } from '@libsql/client'; 
+import { createClient } from '@libsql/client';
 
 dotenv.config({ path: './.env' });
 console.log('Loaded JWT_SECRET:', process.env.JWT_SECRET);
@@ -64,7 +64,7 @@ app.post('/api/v1/user/register', async (req, res) => {
   }
 
   try {
-        // Verificar el token del reCAPTCHA
+    // Verificar el token del reCAPTCHA
     const recaptchaSecret = "6LccAO0qAAAAAOodV7hlnwfN4dOcSSLtlTLu2PTI";
     const recaptchaVerificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${recaptchaToken}`;
     const recaptchaResponse = await axios.post(recaptchaVerificationUrl);
@@ -317,87 +317,32 @@ app.post('/api/v1/user/actualizar', async (req, res) => {
 app.get('/api/v1/user/recargar', authMiddleware, async (req, res) => {
   const userId = req.user.userId; // ID del usuario autenticado
    console.log("ID del usuario autenticado:", userId); // Ver el ID del usuario que está realizando la solicitud
+   console.log("Verificación de usuario:", req.user); // Verificación de los datos del usuario
 
-  // Verificar si userId es del tipo adecuado
-  if (typeof userId !== 'number') {
-    console.error("El userId no es un número válido:", userId);
-    return res.status(400).json({ message: 'ID de usuario no válido' });
+  // Verificar si el usuario es un administrador
+  const user = await db.execute('SELECT * FROM users WHERE id = ?', [userId]);
+
+  if (user.rows.length === 0) {
+    return res.status(400).json({ message: 'Usuario no encontrado' });
+  }
+
+  const currentUser = user.rows[0];
+
+  if (!currentUser.isAdmin) {
+    return res.status(403).json({ message: 'Acción no permitida, solo administradores' });
   }
 
   try {
-    // Verificar si el usuario autenticado es administrador
-    const adminCheck = await db.execute('SELECT isAdmin FROM users WHERE id = ?', [userId]);
-
-    if (adminCheck.rows[0].isAdmin !== 1) {
-      return res.status(403).json({ message: 'Acceso denegado. Solo administradores pueden ver esta información' });
-    }
-
-    // Obtener todos los usuarios con su email y saldo
-    const users = await db.execute('SELECT id, email, name, lastname, direction, postalcode, saldo FROM users');
-
-    return res.json({ success: true, users: users.rows });
+    // Si el usuario es administrador, obtenemos todos los usuarios y sus saldos
+    const result = await db.execute('SELECT id, email, saldo FROM users');
+    return res.json({ users: result.rows });
   } catch (error) {
-    console.error('Error obteniendo los usuarios:', error);
-    return res.status(500).json({ message: 'Error al obtener los usuarios' });
+    console.error("Error fetching users and their balance:", error);
+    return res.status(500).json({ error: "Error al obtener usuarios y sus saldos" });
   }
 });
 
-// Ruta para actualizar el saldo manualmente de un usuario (solo administradores)
-app.put('/api/v1/user/updateSaldo', authMiddleware, async (req, res) => {
-  const userId = req.user.userId; // Obtener el ID del usuario autenticado
-  const { email, saldo } = req.body; // Recibir los datos del saldo a actualizar
-
-  if (!email || typeof saldo !== 'number') {
-    return res.status(400).json({ message: 'Faltan datos o el saldo no es un número válido' });
-  }
-
-  try {
-    // Verificar si el usuario autenticado es un administrador
-    const userCheck = await db.execute('SELECT isAdmin FROM users WHERE id = ?', [userId]);
-    if (userCheck.rows.length === 0 || userCheck.rows[0].isAdmin !== 1) {
-      return res.status(403).json({ message: 'Acceso denegado. Solo el administrador puede modificar el saldo.' });
-    }
-
-    // Obtener el saldo actual del usuario
-    const currentSaldoResult = await db.execute('SELECT saldo FROM users WHERE email = ?', [email]);
-    if (currentSaldoResult.rows.length === 0) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
-    }
-
-    const currentSaldo = currentSaldoResult.rows[0].saldo;
-
-    // Sumar el saldo actual con el nuevo saldo proporcionado
-    const newSaldo = currentSaldo + saldo;
-
-    // Actualizar el saldo del usuario
-    await db.execute('UPDATE users SET saldo = ? WHERE email = ?', [newSaldo, email]);
-
-    return res.json({ message: 'Saldo actualizado correctamente', newSaldo });
-  } catch (error) {
-    console.error('Error actualizando saldo:', error);
-    return res.status(500).json({ message: 'Error al actualizar saldo' });
-  }
+// Escuchar en el puerto configurado
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
-
-
-// Ruta de prueba para verificar si la API está funcionando❤️😍💕
-app.get('/', (req, res) => {
-  res.json({ message: 'API is working!' });
-});
-
-// Iniciar servidor y conectar a la base de datos
-async function startServer() {
-  try {
-    // Test para verificar la conexión (esto no es necesario, pero útil para depuración)
-    await db.execute('SELECT 1');
-    console.log('Conexión exitosa a la base de datos');
-
-    app.listen(PORT, () => {
-      console.log(`Servidor corriendo en el puerto ${PORT}`);
-    });
-  } catch (err) {
-    console.error('Error en la conexión a la base de datos:', err);
-  }
-}
-
-startServer();
