@@ -4,9 +4,9 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "../hooks/use-auth"
 import { Button } from "../../components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card"
+import { Card, CardHeader, CardDescription, CardFooter, CardTitle } from "../../components/ui/card"
 import { useToast } from "../components/ui/use-toast"
-import { ShoppingCart, Plus, Minus, Trash2 } from "lucide-react"
+import { Plus, Minus, Trash2 } from "lucide-react"
 import Navbar from "../components/navbar"
 import Image from "next/image"
 
@@ -184,7 +184,6 @@ export default function ShopPage() {
 
       // Clear cart and show success message
       setCart([])
-      setShowCart(false)
 
       toast({
         title: "Purchase successful",
