@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "../hooks/use-auth"
@@ -270,4 +269,3 @@ export default function AdminPage() {
     </div>
   )
 }
-
