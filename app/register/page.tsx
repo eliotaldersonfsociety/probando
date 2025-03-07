@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
 import { useAuth } from "../hooks/use-auth"
@@ -169,4 +168,3 @@ export default function RegisterPage() {
     </div>
   )
 }
-
