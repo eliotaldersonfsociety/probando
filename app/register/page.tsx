@@ -38,6 +38,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // Verifica si las contraseñas coinciden
     if (formData.password !== formData.confirmPassword) {
       toast({
         title: "Error",
@@ -47,6 +48,7 @@ export default function RegisterPage() {
       return
     }
 
+    // Verifica si el reCAPTCHA está completo
     if (!recaptchaToken) {
       toast({
         title: "Error",
@@ -58,6 +60,7 @@ export default function RegisterPage() {
 
     try {
       setIsSubmitting(true)
+      // Desestructuramos confirmPassword antes de enviar los datos
       const { confirmPassword, ...registerData } = formData
       await register(registerData, recaptchaToken)
       toast({
