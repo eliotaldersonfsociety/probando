@@ -1,5 +1,3 @@
-// app/dashboard/page.tsx
-
 "use client"
 
 import type React from "react"
@@ -21,6 +19,12 @@ type Purchase = {
   payment_method: string
   total_amount: number
   created_at: string
+}
+
+type Item = {
+  name: string
+  quantity: number
+  price: number
 }
 
 export default function DashboardPage() {
@@ -105,7 +109,7 @@ export default function DashboardPage() {
     if (user && token) {
       loadData()
     }
-  }, [user, token, router, toast])
+  }, [user, token, router, toast, loading])  // Added loading here
 
   const handleAddFunds = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -274,7 +278,7 @@ export default function DashboardPage() {
                 ) : (
                   <div className="space-y-4">
                     {purchases.map((purchase) => {
-                      const items = JSON.parse(purchase.items)
+                      const items: Item[] = JSON.parse(purchase.items)
                       return (
                         <div key={purchase.id} className="border rounded-lg p-4">
                           <div className="flex justify-between items-start mb-2">
@@ -292,7 +296,7 @@ export default function DashboardPage() {
                           <div className="mt-2">
                             <h5 className="text-sm font-medium mb-1">Items:</h5>
                             <ul className="text-sm text-muted-foreground">
-                              {items.map((item: any, index: number) => (
+                              {items.map((item: Item, index: number) => (
                                 <li key={index} className="flex justify-between">
                                   <span>
                                     {item.name} x{item.quantity}
