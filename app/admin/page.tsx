@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -45,7 +43,7 @@ export default function AdminPage() {
     if (user && !user.isAdmin) {
       toast({
         title: "Access Denied",
-        description: "You do not have permission to access the admin panel",
+        description: "You do not have permission to access the admin&apos;s panel",
         variant: "destructive",
       })
       router.push("/dashboard")
@@ -220,7 +218,7 @@ export default function AdminPage() {
           <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle>Update User Balance</CardTitle>
-              <CardDescription>Add or remove funds from a user's account</CardDescription>
+              <CardDescription>Add or remove funds from a user&apos;s account</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleUpdateBalance} className="space-y-4">
