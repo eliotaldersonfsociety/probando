@@ -1,11 +1,11 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const axios = require('axios');  
-const { createClient } = require('@libsql/client');  // Usamos createClient para Turso
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import axios from 'axios';
+import { createClient } from '@libsql/client'; 
 
 dotenv.config({ path: './.env' });
 console.log('Loaded JWT_SECRET:', process.env.JWT_SECRET);
