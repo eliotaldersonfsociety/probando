@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useToast } from "../components/ui/use-toast"
 import { ShoppingCart, Plus, Minus, Trash2 } from "lucide-react"
 import Navbar from "../components/navbar"
+import Image from "next/image"
 
 // Mock product data
 const products = [
@@ -190,13 +191,13 @@ export default function ShopPage() {
         description: "Your order has been processed successfully",
       })
 
-      // Redirect to dashboard
-      router.push("/dashboard")
+      // Redirect to order confirmation or another page if necessary
+      router.push("/order-confirmation")
     } catch (error) {
-      console.error("Checkout error:", error)
+      console.error("Error during checkout:", error)
       toast({
-        title: "Checkout failed",
-        description: error instanceof Error ? error.message : "Failed to process your purchase",
+        title: "Error",
+        description: "Something went wrong. Please try again later.",
         variant: "destructive",
       })
     } finally {
@@ -205,121 +206,50 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="container">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Shop</h1>
-          <Button variant="outline" className="relative" onClick={() => setShowCart(!showCart)}>
-            <ShoppingCart className="h-5 w-5 mr-2" />
-            Cart
-            {cart.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {cart.reduce((total, item) => total + item.quantity, 0)}
-              </span>
-            )}
-          </Button>
-        </div>
-
-        {showCart ? (
-          <div className="mb-8">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Cart</CardTitle>
-                <CardDescription>
-                  {cart.length === 0
-                    ? "Your cart is empty"
-                    : `${cart.reduce((total, item) => total + item.quantity, 0)} items in your cart`}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {cart.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-4">
-                    Your cart is empty. Add some products to get started.
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {cart.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between border-b pb-4">
-                        <div>
-                          <h4 className="font-medium">{item.name}</h4>
-                          <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => updateQuantity(item.id, -1)}
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
-                          <span className="w-8 text-center">{item.quantity}</span>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => updateQuantity(item.id, 1)}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-destructive"
-                            onClick={() => removeFromCart(item.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter className="flex flex-col space-y-4">
-                <div className="flex justify-between w-full">
-                  <span className="font-medium">Total:</span>
-                  <span className="font-bold">${calculateTotal().toFixed(2)}</span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <Card key={product.id}>
+            <CardHeader>
+              <Image
+                src={product.image}
+                alt={product.name}
+                width={500}
+                height={500}
+                className="w-full h-48 object-cover"
+              />
+              <CardTitle>{product.name}</CardTitle>
+              <CardDescription>{product.description}</CardDescription>
+            </CardHeader>
+            <CardFooter>
+              <Button onClick={() => addToCart(product)} leftIcon={<Plus />}>Add to Cart</Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+      {showCart && (
+        <div className="cart">
+          <div className="cart-items">
+            {cart.map((item) => (
+              <div key={item.id} className="cart-item">
+                <span>{item.name}</span>
+                <div className="quantity-controls">
+                  <Button onClick={() => updateQuantity(item.id, -1)} disabled={item.quantity <= 1}><Minus /></Button>
+                  <span>{item.quantity}</span>
+                  <Button onClick={() => updateQuantity(item.id, 1)}><Plus /></Button>
                 </div>
-                <div className="flex space-x-2 w-full">
-                  <Button variant="outline" className="w-1/2" onClick={() => setShowCart(false)}>
-                    Continue Shopping
-                  </Button>
-                  <Button className="w-1/2" onClick={handleCheckout} disabled={cart.length === 0 || isProcessing}>
-                    {isProcessing ? "Processing..." : "Checkout"}
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden">
-                <img
-                  src={product.image || "/placeholder.svg"}
-                  alt={product.name}
-                  className="w-full h-48 object-cover"
-                />
-                <CardHeader>
-                  <CardTitle>{product.name}</CardTitle>
-                  <CardDescription>{product.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">${product.price.toFixed(2)}</p>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full" onClick={() => addToCart(product)}>
-                    <ShoppingCart className="mr-2 h-4 w-4" />
-                    Add to Cart
-                  </Button>
-                </CardFooter>
-              </Card>
+                <span>${item.price * item.quantity}</span>
+                <Button onClick={() => removeFromCart(item.id)}><Trash2 /></Button>
+              </div>
             ))}
           </div>
-        )}
-      </main>
+          <div className="cart-summary">
+            <span>Total: ${calculateTotal()}</span>
+            <Button onClick={handleCheckout} isLoading={isProcessing}>Checkout</Button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
