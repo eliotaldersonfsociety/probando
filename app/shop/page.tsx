@@ -222,7 +222,10 @@ export default function ShopPage() {
               <CardDescription>{product.description}</CardDescription>
             </CardHeader>
             <CardFooter>
-              <Button onClick={() => addToCart(product)} leftIcon={<Plus />}>Add to Cart</Button>
+              <Button onClick={() => addToCart(product)}>
+                <Plus className="mr-2" />
+                Add to Cart
+              </Button>
             </CardFooter>
           </Card>
         ))}
