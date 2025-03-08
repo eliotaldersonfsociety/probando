@@ -1,13 +1,13 @@
-"use client"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useAuth } from "../hooks/use-auth"
-import { Button } from "../../components/ui/button"
-import { Card, CardHeader, CardDescription, CardFooter, CardTitle } from "../../components/ui/card"
-import { useToast } from "../components/ui/use-toast"
-import { Plus, Minus, Trash2 } from "lucide-react"
-import Navbar from "../components/navbar"
-import Image from "next/image"
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../hooks/use-auth";
+import { Button } from "../../components/ui/button";
+import { Card, CardHeader, CardDescription, CardFooter, CardTitle } from "../../components/ui/card";
+import { useToast } from "../components/ui/use-toast";
+import { Plus, Minus, Trash2 } from "lucide-react";
+import Navbar from "../components/navbar";
+import Image from "next/image";
 
 // Mock product data
 const products = [
@@ -53,53 +53,55 @@ const products = [
     price: 199.99,
     image: "/placeholder.svg?height=200&width=200",
   },
-]
+];
 
 type CartItem = {
-  id: number
-  name: string
-  price: number
-  quantity: number
-}
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+};
 
 export default function ShopPage() {
-  const [cart, setCart] = useState<CartItem[]>([])
-  const [showCart, setShowCart] = useState(false)
-  const [isProcessing, setIsProcessing] = useState(false)
-  const { user, token } = useAuth()
-  const router = useRouter()
-  const { toast } = useToast()
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [showCart, setShowCart] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { user, token } = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
 
   const addToCart = (product: (typeof products)[0]) => {
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id)
+      const existingItem = prevCart.find((item) => item.id === product.id);
 
       if (existingItem) {
-        return prevCart.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item))
+        return prevCart.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
       } else {
-        return [...prevCart, { id: product.id, name: product.name, price: product.price, quantity: 1 }]
+        return [...prevCart, { id: product.id, name: product.name, price: product.price, quantity: 1 }];
       }
-    })
+    });
 
     toast({
       title: "Added to cart",
       description: `${product.name} has been added to your cart`,
-    })
-  }
+    });
+  };
 
   const updateQuantity = (id: number, change: number) => {
     setCart((prevCart) =>
-      prevCart.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, item.quantity + change) } : item)),
-    )
-  }
+      prevCart.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, item.quantity + change) } : item))
+    );
+  };
 
   const removeFromCart = (id: number) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id))
-  }
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  };
 
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0)
-  }
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
 
   const handleCheckout = async () => {
     if (!user || !token) {
@@ -107,9 +109,9 @@ export default function ShopPage() {
         title: "Login required",
         description: "Please login to complete your purchase",
         variant: "destructive",
-      })
-      router.push("/login")
-      return
+      });
+      router.push("/login");
+      return;
     }
 
     if (cart.length === 0) {
@@ -117,34 +119,34 @@ export default function ShopPage() {
         title: "Empty cart",
         description: "Your cart is empty",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     try {
-      setIsProcessing(true)
+      setIsProcessing(true);
 
       // First check if user has enough balance
       const balanceResponse = await fetch("http://localhost:3001/api/v1/user/saldo", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      })
+      });
 
       if (!balanceResponse.ok) {
-        throw new Error("Failed to check balance")
+        throw new Error("Failed to check balance");
       }
 
-      const balanceData = await balanceResponse.json()
-      const total = calculateTotal()
+      const balanceData = await balanceResponse.json();
+      const total = calculateTotal();
 
       if (balanceData.saldo < total) {
         toast({
           title: "Insufficient funds",
           description: "Please add more funds to your account",
           variant: "destructive",
-        })
-        return
+        });
+        return;
       }
 
       // Process the purchase
@@ -159,10 +161,10 @@ export default function ShopPage() {
           payment_method: "Balance",
           total_amount: total,
         }),
-      })
+      });
 
       if (!purchaseResponse.ok) {
-        throw new Error("Failed to process purchase")
+        throw new Error("Failed to process purchase");
       }
 
       // Update user balance
@@ -175,33 +177,33 @@ export default function ShopPage() {
           userId: user.id,
           total_amount: total,
         }),
-      })
+      });
 
       if (!updateBalanceResponse.ok) {
-        throw new Error("Failed to update balance")
+        throw new Error("Failed to update balance");
       }
 
       // Clear cart and show success message
-      setCart([])
+      setCart([]);
 
       toast({
         title: "Purchase successful",
         description: "Your order has been processed successfully",
-      })
+      });
 
       // Redirect to order confirmation or another page if necessary
-      router.push("/order-confirmation")
+      router.push("/order-confirmation");
     } catch (error) {
-      console.error("Error during checkout:", error)
+      console.error("Error during checkout:", error);
       toast({
         title: "Error",
         description: "Something went wrong. Please try again later.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
-  }
+  };
 
   return (
     <div className="container">
@@ -221,7 +223,10 @@ export default function ShopPage() {
               <CardDescription>{product.description}</CardDescription>
             </CardHeader>
             <CardFooter>
-              <Button onClick={() => addToCart(product)} leftIcon={<Plus />}>Add to Cart</Button>
+              <Button onClick={() => addToCart(product)}>
+                <Plus className="left-icon" />
+                Add to Cart
+              </Button>
             </CardFooter>
           </Card>
         ))}
@@ -233,23 +238,29 @@ export default function ShopPage() {
               <div key={item.id} className="cart-item">
                 <span>{item.name}</span>
                 <div className="quantity-controls">
-                  <Button onClick={() => updateQuantity(item.id, -1)} disabled={item.quantity <= 1}><Minus /></Button>
+                  <Button onClick={() => updateQuantity(item.id, -1)} disabled={item.quantity <= 1}>
+                    <Minus />
+                  </Button>
                   <span>{item.quantity}</span>
-                  <Button onClick={() => updateQuantity(item.id, 1)}><Plus /></Button>
+                  <Button onClick={() => updateQuantity(item.id, 1)}>
+                    <Plus />
+                  </Button>
                 </div>
                 <span>${item.price * item.quantity}</span>
-                <Button onClick={() => removeFromCart(item.id)}><Trash2 /></Button>
+                <Button onClick={() => removeFromCart(item.id)}>
+                  <Trash2 />
+                </Button>
               </div>
             ))}
           </div>
           <div className="cart-summary">
             <span>Total: ${calculateTotal()}</span>
             <Button onClick={handleCheckout} disabled={isProcessing}>
-              {isProcessing ? 'Processing...' : 'Checkout'}
+              {isProcessing ? "Processing..." : "Checkout"}
             </Button>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
