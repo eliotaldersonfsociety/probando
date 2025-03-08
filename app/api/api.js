@@ -342,6 +342,11 @@ app.get('/api/v1/user/recargar', authMiddleware, async (req, res) => {
   }
 });
 
+app.get('/api/v1/health', (req, res) => {
+  res.json({ message: 'API funcionando correctamente' });
+});
+
+
 // Escuchar en el puerto configurado
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
