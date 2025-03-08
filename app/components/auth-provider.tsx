@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string, recaptchaToken: string) => {
     try {
       setLoading(true)
-      const response = await fetch("https://probando-vert.vercel.app/api/v1/user/login", {
+      const response = await fetch("https://probando-h1ip.onrender.com/api/v1/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       console.log("Enviando datos al servidor:", userData, recaptchaToken) // 👀 Verifica qué se envía
       setLoading(true)
-      const response = await fetch("https://probando-vert.vercel.app/api/v1/user/register", {
+      const response = await fetch("https://probando-h1ip.onrender.com/api/v1/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
