@@ -98,7 +98,7 @@ export default function LoginPage() {
               </div>
               <div className="flex justify-center my-4">
                 <ReCAPTCHA
-                  sitekey="6LdML-0qAAAAAGrHYKWIFlJs_ojxRuz9-RayKiAw"
+                  sitekey="6LcEOu0qAAAAAM7kGlmzEUFOw4EInFmNY0GoPnFd"
                   onChange={(token) => setRecaptchaToken(token || "")}
                 />
               </div>
