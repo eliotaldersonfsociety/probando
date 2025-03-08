@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack", // Modo desarrollo (solo para local)
-    "build": "next build",         // Compila el frontend
-    "start": "node index.js",      // Inicia el backend (y sirve el frontend)
+    "dev": "next dev --turbopack", 
+    "build": "next build",         
+    "start": "node index.js",      
     "lint": "next lint",
-    "build:frontend": "next build", // Script específico para construir el frontend
-    "serve": "node index.js"        // Script para servir el backen
+    "build:frontend": "next build",
+    "serve": "node index.js"       
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
