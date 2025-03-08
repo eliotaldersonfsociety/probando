@@ -125,7 +125,7 @@ app.post('/api/v1/user/login', async (req, res) => {
 
   try {
     // Verificar el token del reCAPTCHA
-    const recaptchaSecret = "6LeH-eMqAAAAAFY2DENwsi7khcbPuy6AYTdkEEeo";
+    const recaptchaSecret = "6LdML-0qAAAAAJkiEDiEQcTaR8zCp5oG9wOKImQE";
     const recaptchaVerificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${recaptchaToken}`;
     const recaptchaResponse = await axios.post(recaptchaVerificationUrl);
     
