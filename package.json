@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "next dev --turbopack", 
     "build": "next build",         
-    "start": "node index.js",      
+    "start": "node api.js",      
     "lint": "next lint",
     "build:frontend": "next build",
-    "serve": "node index.js"       
+    "serve": "node api.js"       
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
