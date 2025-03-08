@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start"
+    "dev": "next dev --turbopack", // Modo desarrollo (solo para local)
+    "build": "next build",         // Compila el frontend
+    "start": "node index.js",      // Inicia el backend (y sirve el frontend)
+    "lint": "next lint",
+    "build:frontend": "next build", // Script específico para construir el frontend
+    "serve": "node index.js"        // Script para servir el backen
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
@@ -23,7 +26,6 @@
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.479.0",
     "next": "15.2.1",
-    "probando": "file:",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-google-recaptcha": "^3.1.0",
