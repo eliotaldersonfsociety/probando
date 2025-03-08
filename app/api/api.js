@@ -41,7 +41,7 @@ const authMiddleware = (req, res, next) => {
 };
 
 // Configurar CORS adecuadamente
-const allowedOrigins = ["https://probando-vert.vercel.app"];
+const allowedOrigins = ["https://probando-h1ip.onrender.com"];
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
