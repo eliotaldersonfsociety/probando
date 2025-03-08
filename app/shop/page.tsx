@@ -221,9 +221,7 @@ export default function ShopPage() {
               <CardDescription>{product.description}</CardDescription>
             </CardHeader>
             <CardFooter>
-              <Button onClick={() => addToCart(product)}>
-                <Plus className="mr-2" /> Add to Cart
-              </Button>
+              <Button onClick={() => addToCart(product)} leftIcon={<Plus />}>Add to Cart</Button>
             </CardFooter>
           </Card>
         ))}
@@ -235,24 +233,20 @@ export default function ShopPage() {
               <div key={item.id} className="cart-item">
                 <span>{item.name}</span>
                 <div className="quantity-controls">
-                  <Button onClick={() => updateQuantity(item.id, -1)} disabled={item.quantity <= 1}>
-                    <Minus />
-                  </Button>
+                  <Button onClick={() => updateQuantity(item.id, -1)} disabled={item.quantity <= 1}><Minus /></Button>
                   <span>{item.quantity}</span>
-                  <Button onClick={() => updateQuantity(item.id, 1)}>
-                    <Plus />
-                  </Button>
+                  <Button onClick={() => updateQuantity(item.id, 1)}><Plus /></Button>
                 </div>
                 <span>${item.price * item.quantity}</span>
-                <Button onClick={() => removeFromCart(item.id)}>
-                  <Trash2 />
-                </Button>
+                <Button onClick={() => removeFromCart(item.id)}><Trash2 /></Button>
               </div>
             ))}
           </div>
           <div className="cart-summary">
             <span>Total: ${calculateTotal()}</span>
-            <Button onClick={handleCheckout} isLoading={isProcessing}>Checkout</Button>
+            <Button onClick={handleCheckout} disabled={isProcessing}>
+              {isProcessing ? 'Processing...' : 'Checkout'}
+            </Button>
           </div>
         </div>
       )}
