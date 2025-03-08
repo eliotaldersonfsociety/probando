@@ -41,7 +41,7 @@ const authMiddleware = (req, res, next) => {
 };
 
 // Configurar CORS adecuadamente
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = ["https://probando-vert.vercel.app"];
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
