@@ -2,13 +2,14 @@
   "name": "probando",
   "version": "0.1.0",
   "private": true,
+  "type": "module", 
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "concurrently \"next start -p 3000\" \"node app/api/index.js\"",
+    "dev": "next dev --turbopack", 
+    "build": "next build", 
+    "start": "node start.js", 
     "lint": "next lint",
-    "build:frontend": "next build",
-    "serve": "node app/api/index.js"
+    "build:frontend": "next build", 
+    "serve": "node app/api/index.js" 
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
@@ -20,7 +21,7 @@
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "concurrently": "^8.2.2",
+    "concurrently": "^8.2.2", 
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
